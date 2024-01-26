@@ -53,7 +53,10 @@
 
 ## Haurchefant
 
-eydis plan (kinda worked before)
+![haurchefant](haurchefant.png)
+
+- must get ui3 after spear
+  - if ice paradox used, must get 3 umbral hearts also
 
 ## Thordan 2
 
