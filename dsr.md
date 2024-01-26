@@ -58,9 +58,15 @@ eydis plan (kinda worked before)
 
 eydis plan (also kinda works)
 
+- no caster lb2 on meteors (for our group)
+
 ## Double Dragons
 
 don't know how the two plans in the blm dsr channel fare
+
+- caster lb3 but when will it happen???
+  - caster lb3 is 4.5s cast with ~8s anilock (healer rescue lets yo move but gcd still locked)
+  - transpose into ui1 from af3, caster lb3, ice paradox to refresh
 
 ## Dragon King
 
