@@ -23,3 +23,18 @@
 - if f3p, save for nidhogg
 
 ## Nidhogg
+
+*untested, only works in theory*
+
+### Opener
+
+![nidhogg_1](nidhogg_1.png)
+
+- transpose only if f3p from thordan
+
+### Branching Wyrmhole
+
+![nidhogg_2](nidhogg_2.png)
+
+- top line if 1s or 2s with circle
+- bottom line if 3s or 2s with arrow
