@@ -47,7 +47,7 @@
 
 ## Eyes
 
-eydis plan (early end, t3p early)
+![eyes](eyes.png)
 
 ## Haurchefant
 
