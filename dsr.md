@@ -15,3 +15,11 @@
 - transpose on tower soak
 
 ### Post-Sanctity
+
+![thordan_1c](thordan_1c.png)
+
+- sharpcast at ice puddle right before sharpcast caps
+- leyline at 5s on sharpcast
+- if f3p, save for nidhogg
+
+## Nidhogg
