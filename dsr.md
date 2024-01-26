@@ -49,6 +49,8 @@
 
 ![eyes](eyes.png)
 
+- pot as the orbs reach the eye spots
+
 ## Haurchefant
 
 eydis plan (kinda worked before)
