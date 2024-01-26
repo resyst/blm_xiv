@@ -5,3 +5,5 @@
 ## Thordan 1
 
 ### Opener
+
+![thordan_1a](thordan_1a.png)
