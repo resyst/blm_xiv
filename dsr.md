@@ -24,8 +24,6 @@
 
 ## Nidhogg
 
-*untested, only works in theory*
-
 ### Opener
 
 ![nidhogg_1](nidhogg_1.png)
@@ -60,9 +58,25 @@
 
 ## Thordan 2
 
-eydis plan (also kinda works)
+### Opener
 
+![thordan_2a](thordan_2a.png)
+
+- yolo scathe at the end, doing one more gcd is ghosty
+- don't forget to refill paradox
+
+### Post-Wrath
+
+![thordan_2b](thordan_2b.png)
+
+- don't forget to refill paradox again
 - no caster lb2 on meteors (for our group)
+
+### Post-Death
+
+- yolo, but hold resources
+  - sharpcast during doth at some point to get thundercloud for double dragons
+  - manaward for playstation
 
 ## Double Dragons
 
@@ -74,4 +88,4 @@ don't know how the two plans in the blm dsr channel fare
 
 ## Dragon King
 
-don't know how the single plan in the blm dsr channel fare
+don't know how the single plan in the blm dsr channel fares
