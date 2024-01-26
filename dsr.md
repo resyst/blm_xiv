@@ -38,3 +38,30 @@
 
 - top line if 1s or 2s with circle
 - bottom line if 3s or 2s with arrow
+
+### Converge
+
+![nidhogg_3](nidhogg_3.png)
+
+- pot held for eyes
+- addle for tank tethers (?)
+
+## Eyes
+
+eydis plan (early end, t3p early)
+
+## Haurchefant
+
+eydis plan (kinda worked before)
+
+## Thordan 2
+
+eydis plan (also kinda works)
+
+## Double Dragons
+
+don't know how the two plans in the blm dsr channel fare
+
+## Dragon King
+
+don't know how the single plan in the blm dsr channel fare
