@@ -44,7 +44,6 @@
 ![nidhogg_3](nidhogg_3.png)
 
 - pot held for eyes
-- addle for tank tethers (?)
 
 ## Eyes
 
@@ -65,7 +64,7 @@ eydis plan (also kinda works)
 don't know how the two plans in the blm dsr channel fare
 
 - caster lb3 but when will it happen???
-  - caster lb3 is 4.5s cast with ~8s anilock (healer rescue lets yo move but gcd still locked)
+  - caster lb3 is 4.5s cast with ~8s anilock (healer rescue lets you move but gcd still locked)
   - transpose into ui1 from af3, caster lb3, ice paradox to refresh
 
 ## Dragon King
