@@ -8,6 +8,8 @@
 
 ![thordan_1a](thordan_1a.png)
 
+- prepull pot instead
+
 ### Post-Strength
 
 ![thordan_1b](thordan_1b.png)
@@ -34,20 +36,20 @@
 
 ![nidhogg_2](nidhogg_2.png)
 
-- top line if 1s or 2s with circle
-- bottom line if 3s or 2s with arrow
+- top line if 1s and rear
+- bottom line otherwise
 
 ### Converge
 
 ![nidhogg_3](nidhogg_3.png)
 
-- pot held for eyes
+- pot when up to skip drachenlance
 
 ## Eyes
 
 ![eyes](eyes.png)
 
-- pot as the orbs reach the eye spots
+- todo: testing alternatives, to be replaced
 
 ## Haurchefant
 
@@ -64,6 +66,7 @@
 
 - yolo scathe at the end, doing one more gcd is ghosty
 - don't forget to refill paradox
+- todo: use paradox instead of xeno (get an extra one for two minute window later)
 
 ### Post-Wrath
 
@@ -71,6 +74,7 @@
 
 - don't forget to refill paradox again
 - no caster lb2 on meteors (for our group)
+- todo: rework for extra xeno
 
 ### Post-Death
 
