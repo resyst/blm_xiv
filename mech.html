@@ -1,0 +1,264 @@
+<html>
+<head>
+<title>Forsaken</title>
+</head>
+<style>
+body {
+    margin: 0;
+    padding: 2em;
+    background: #242933;
+    font-family: sans-serif;
+    color: #d8dee9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+h1 {
+    font-size: 2em;
+    color: #eceff4;
+}
+canvas {
+    border: 1px solid #3B4252;
+}
+</style>
+<h1>Stacks</h1>
+<canvas id="stacks" width="800" height="600"></canvas>
+<h1>Baits</h1>
+<canvas id="baits" width="800" height="600"></canvas>
+<script>
+const YELLOW = "#ebcb8b";
+const GREEN = "#a3be8c";
+const ORANGE = "#d08770";
+const CYAN = "#88c0d0";
+const GRID = "#616e87";
+const WHITE = "#d8dee9";
+const RED = "#c14541";
+const PURPLE = "rgba(180, 142, 173, 0.15)";
+const RED_ARC = "rgba(191, 97, 106, 0.1)";
+const RED_CIRCLE = "rgba(191, 97, 106, 0.15)";
+const YELLOW_ARC = "rgba(235, 203, 139, 0.1)";
+const ORANGE_HALO = "rgba(208, 135, 112, 0.15)";
+const GREEN_CIRCLE = "rgba(163, 190, 140, 0.15)";
+
+function drawBaits(canvasId, options = {}) {
+    const canvas = document.getElementById(canvasId);
+    const cx = canvas.width / 2, cy = canvas.height / 2;
+    const maxRadius = Math.min(canvas.width, canvas.height) * 0.4;
+    const dotStep = maxRadius / 9;
+
+    function toXY(angleDeg, ring) {
+        const angle = ((angleDeg - 90) * Math.PI) / 180;
+        return { x: cx + Math.cos(angle) * dotStep * ring, y: cy + Math.sin(angle) * dotStep * ring };
+    }
+
+    function wci(side, ring) {
+        const cDist = 4, cRad = 2;
+        const d = (cDist*cDist - cRad*cRad + ring*ring) / (2*cDist);
+        const h = Math.sqrt(ring*ring - d*d);
+        const s = Math.sqrt(2) / 2;
+        return {
+            inner: { x: cx + side * (d - h) * s * dotStep, y: cy + (d + h) * s * dotStep },
+            outer: { x: cx + side * (d + h) * s * dotStep, y: cy + (d - h) * s * dotStep },
+        };
+    }
+
+    const yp = wci(1, 2.8), yp2 = wci(-1, options.leftYellowRing || 2.8);
+    const op = wci(1, 5);
+    const op2Inner = options.leftOrangeAngle
+        ? toXY(options.leftOrangeAngle, options.leftOrangeRing || 5)
+        : wci(-1, 5).inner;
+    const cyan1 = toXY(options.cyan1Angle || 30, options.cyan1Ring || 2.8);
+    const cyan2 = toXY(options.cyan2Angle || -30, options.cyan2Ring || 2.8);
+    const yellowAngle = Math.atan2(yp2.outer.y - cy, yp2.outer.x - cx) * 180 / Math.PI + 90;
+    const cyan3Angle = options.cyan3Angle ?? 90;
+    const cyan4Angle = options.cyan4FollowYellow ? yellowAngle : (options.cyan4Angle ?? -90);
+    const cyan3 = toXY(cyan3Angle, options.cyan3Ring || 5);
+    const cyan4 = toXY(cyan4Angle, options.cyan4Ring || 5);
+
+    canvas._data = {
+        canvasId, cx, cy, dotStep, maxRadius, options,
+        yellowRight: yp.outer, yellowLeft: yp2.outer,
+        orangeRight: op.inner, orangeLeft: op2Inner,
+        cyan1, cyan2, cyan3, cyan4,
+    };
+
+    renderScene(canvas, canvas._data);
+}
+
+function renderScene(canvas) {
+    const d = canvas._data;
+    const ctx = canvas.getContext("2d");
+    const { cx, cy, dotStep, maxRadius, options } = d;
+    const rightColor = options.rightYellowColor || YELLOW;
+    const leftOrangeColor = options.leftOrangeColor || ORANGE;
+    const dots = [d.yellowRight, d.yellowLeft, d.orangeRight, d.orangeLeft, d.cyan1, d.cyan2, d.cyan3, d.cyan4];
+    const colored = [d.yellowRight, d.yellowLeft, d.orangeRight, d.orangeLeft];
+
+    function dd(x, y, c) {
+        ctx.beginPath(); ctx.arc(x, y, 0.2 * dotStep, 0, Math.PI * 2);
+        ctx.fillStyle = c; ctx.fill();
+    }
+    function countInCircle(dot, radius) {
+        return dots.filter(p => Math.hypot(p.x - dot.x, p.y - dot.y) <= radius).length;
+    }
+    function closestTo(dot, skip) {
+        let best = null, bestD = Infinity;
+        for (const p of dots) { if (p === skip) continue;
+            const dd2 = Math.hypot(p.x - dot.x, p.y - dot.y);
+            if (dd2 < bestD) { bestD = dd2; best = p; }
+        }
+        return best;
+    }
+    function inWC(dot, side) {
+        const r = ((135 * side - 90) * Math.PI) / 180;
+        const ccx = cx + Math.cos(r) * dotStep * 4, ccy = cy + Math.sin(r) * dotStep * 4;
+        return Math.hypot(dot.x - ccx, dot.y - ccy) <= dotStep * 2 * (1 + 1e-9);
+    }
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // grid
+    for (let i = 1; i <= 9; i++) {
+        ctx.beginPath(); ctx.arc(cx, cy, dotStep * i, 0, Math.PI * 2);
+        ctx.strokeStyle = GRID; ctx.lineWidth = 1; ctx.stroke();
+    }
+    for (let i = 0; i < 8; i++) {
+        const a = (Math.PI * 2 / 8) * i;
+        ctx.beginPath(); ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(a) * maxRadius, cy + Math.sin(a) * maxRadius);
+        ctx.strokeStyle = GRID; ctx.lineWidth = 1; ctx.stroke();
+    }
+
+    // white circles
+    for (const side of [1, -1]) {
+        const r = ((135 * side - 90) * Math.PI) / 180;
+        const ccx = cx + Math.cos(r) * dotStep * 4, ccy = cy + Math.sin(r) * dotStep * 4;
+        const insideCount = colored.filter(p => inWC(p, side)).length;
+        ctx.beginPath(); ctx.arc(ccx, ccy, dotStep * 2, 0, Math.PI * 2);
+        ctx.strokeStyle = insideCount >= 2 ? WHITE : RED;
+        ctx.lineWidth = 1; ctx.stroke();
+    }
+
+    // compute proximity set + sorted list for baits cross-check
+    let proximitySet = null, proximitySorted = null;
+    if (options.proximityCircles) {
+        proximitySorted = [...dots].sort((a, b) => Math.hypot(a.x - cx, a.y - cy) - Math.hypot(b.x - cx, b.y - cy));
+        proximitySet = new Set(proximitySorted.slice(0, 4));
+    }
+
+    // yellow arcs
+    for (const [dot, color, side] of [[d.yellowRight, rightColor, 1], [d.yellowLeft, YELLOW, -1]]) {
+        if (color === YELLOW && inWC(dot, side)) {
+            const target = closestTo(dot, dot);
+            const angle = Math.atan2(target.y - dot.y, target.x - dot.x);
+            const arcR = dotStep * 18;
+            let hasOther = false;
+            for (const p of dots) {
+                if (p === dot || p === target) continue;
+                const dist = Math.hypot(p.x - dot.x, p.y - dot.y);
+                if (dist <= arcR) {
+                    let pa = Math.atan2(p.y - dot.y, p.x - dot.x) - angle;
+                    while (pa > Math.PI) pa -= Math.PI * 2;
+                    while (pa < -Math.PI) pa += Math.PI * 2;
+                    if (Math.abs(pa) <= Math.PI / 4) { hasOther = true; break; }
+                }
+            }
+            // red if target is in proximity set or is an orange dot
+            const targetInProximity = proximitySet && proximitySet.has(target);
+            const targetIsOrange = target === d.orangeRight || target === d.orangeLeft;
+            ctx.beginPath(); ctx.moveTo(dot.x, dot.y);
+            ctx.arc(dot.x, dot.y, arcR, angle - Math.PI / 4, angle + Math.PI / 4);
+            ctx.closePath();
+            ctx.fillStyle = (hasOther || targetInProximity || targetIsOrange) ? RED_ARC : YELLOW_ARC;
+            ctx.fill();
+        }
+    }
+    // draw yellow dots (skip if green section will draw them)
+    if (rightColor !== GREEN) dd(d.yellowRight.x, d.yellowRight.y, rightColor);
+    dd(d.yellowLeft.x, d.yellowLeft.y, YELLOW);
+
+    // green circles
+    for (const [dot, color, side] of [[d.yellowRight, rightColor, 1], [d.orangeLeft, leftOrangeColor, -1]]) {
+        if (color === GREEN && inWC(dot, side)) {
+            const count = countInCircle(dot, dotStep * 2.25);
+            ctx.beginPath(); ctx.arc(dot.x, dot.y, dotStep * 2.25, 0, Math.PI * 2);
+            ctx.fillStyle = count < 3 ? RED_CIRCLE : GREEN_CIRCLE;
+            ctx.fill();
+            dd(dot.x, dot.y, GREEN);
+        }
+    }
+
+    // proximity circles
+    if (options.proximityCircles) {
+        for (const p of proximitySorted.slice(0, 4)) {
+            const pr = dotStep * 2.25;
+            let hasOther = dots.some(q => q !== p && Math.hypot(q.x - p.x, q.y - p.y) <= pr);
+            ctx.beginPath(); ctx.arc(p.x, p.y, pr, 0, Math.PI * 2);
+            ctx.fillStyle = hasOther ? RED_CIRCLE : PURPLE;
+            ctx.fill();
+        }
+    }
+
+    // orange halos
+    for (const [dot, color, side] of [[d.orangeRight, ORANGE, 1], [d.orangeLeft, leftOrangeColor, -1]]) {
+        if (color === ORANGE && inWC(dot, side)) {
+            const haloR = dotStep * 2.25;
+            let hasOther = dots.some(p => p !== dot && Math.hypot(p.x - dot.x, p.y - dot.y) <= haloR);
+            ctx.beginPath(); ctx.arc(dot.x, dot.y, haloR, 0, Math.PI * 2);
+            ctx.fillStyle = hasOther ? RED_CIRCLE : ORANGE_HALO;
+            ctx.fill();
+        }
+        dd(dot.x, dot.y, color);
+    }
+
+    // cyan dots
+    for (const dot of [d.cyan1, d.cyan2, d.cyan3, d.cyan4]) {
+        dd(dot.x, dot.y, CYAN);
+    }
+}
+
+drawBaits("stacks", {
+    rightYellowColor: GREEN,
+    leftOrangeColor: GREEN,
+    leftOrangeAngle: -135,
+    leftOrangeRing: 3.8,
+    leftYellowRing: 5,
+    cyan4FollowYellow: true,
+    cyan4Ring: 6,
+    cyan2Angle: -135,
+    cyan2Ring: 1.8,
+    // cyan1/cyan3: tangent to 135° line at ring 1.8 (dot radius 0.2)
+    cyan1Angle: 128.7, cyan1Ring: 1.8,
+    cyan3Angle: 141.3, cyan3Ring: 1.8
+});
+drawBaits("baits", { proximityCircles: true });
+
+// drag support
+let dragDot = null, dragCanvas = null;
+
+document.addEventListener("mousedown", e => {
+    const c = e.target;
+    if (c.tagName !== "CANVAS" || !c._data) return;
+    const rect = c.getBoundingClientRect();
+    const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    const allDots = [c._data.yellowRight, c._data.yellowLeft, c._data.orangeRight, c._data.orangeLeft, c._data.cyan1, c._data.cyan2, c._data.cyan3, c._data.cyan4];
+    for (const dot of allDots) {
+        if (Math.hypot(dot.x - mx, dot.y - my) <= 0.5 * c._data.dotStep) {
+            dragDot = dot; dragCanvas = c; return;
+        }
+    }
+});
+
+document.addEventListener("mousemove", e => {
+    if (!dragDot) return;
+    const rect = dragCanvas.getBoundingClientRect();
+    dragDot.x = e.clientX - rect.left;
+    dragDot.y = e.clientY - rect.top;
+    renderScene(dragCanvas);
+});
+
+document.addEventListener("mouseup", () => {
+    dragDot = null; dragCanvas = null;
+});
+</script>
+</html>
